@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jméno Příjmení — Výzkum & Výstavy</title>
+<meta name="description" content="Diplomová práce a výstavní projekt věnovaný intimitě a sexualitě seniorek a seniorů v domovech pro seniory.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F5F0E8;
+    --cream-dark: #EDE7D8;
+    --ink: #1C1A17;
+    --ink-mid: #4A4640;
+    --ink-light: #8A8278;
+    --accent: #7C4A2D;
+    --accent-light: #C4896A;
+    --white: #FDFBF7;
+    --border: rgba(28,26,23,0.12);
+    --border-strong: rgba(28,26,23,0.25);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--serif);
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 300; letter-spacing: -0.02em; line-height: 1.05; }
+  h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 300; letter-spacing: -0.01em; }
+  h3 { font-size: 1.2rem; font-weight: 400; }
+  p { font-weight: 300; }
+  em { font-style: italic; }
+
+  .mono { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 4rem); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 1.25rem clamp(1.5rem, 5vw, 4rem);
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(245, 240, 232, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+    transition: var(--transition);
+  }
+
+  .nav-name {
+    font-family: var(--serif); font-size: 1rem; font-weight: 400;
+    color: var(--ink); text-decoration: none; letter-spacing: 0.02em;
+  }
+
+  .nav-right { display: flex; align-items: center; gap: 2rem; }
+
+  .nav-links { display: flex; gap: 1.75rem; list-style: none; }
+
+  .nav-links a {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mid); text-decoration: none;
+    transition: color var(--transition);
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  .lang-toggle {
+    display: flex; gap: 0; border: 0.5px solid var(--border-strong); border-radius: 2px; overflow: hidden;
+  }
+
+  .lang-btn {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; background: transparent; border: none; cursor: pointer;
+    padding: 0.3rem 0.6rem; color: var(--ink-light); transition: var(--transition);
+  }
+  .lang-btn.active { background: var(--ink); color: var(--cream); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    padding-top: 80px;
+    position: relative;
+  }
+
+  .hero-left {
+    padding: clamp(3rem, 8vw, 7rem) clamp(1.5rem, 5vw, 4rem);
+    padding-right: 3rem;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 2rem; height: 0.5px; background: var(--accent);
+  }
+
+  .hero-title { margin-bottom: 1.5rem; }
+
+  .hero-title em {
+    display: block; color: var(--accent); font-style: italic;
+  }
+
+  .hero-bio {
+    font-size: 1.05rem; color: var(--ink-mid); max-width: 42ch;
+    margin-bottom: 2.5rem; line-height: 1.8;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink);
+    border-bottom: 0.5px solid var(--ink-mid); padding-bottom: 0.25rem;
+    text-decoration: none; transition: var(--transition);
+  }
+  .hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+  .hero-cta::after { content: '→'; }
+
+  .hero-right {
+    position: relative; height: 100vh;
+    background: var(--cream-dark);
+    border-left: 0.5px solid var(--border);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .hero-photo-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1rem; color: var(--ink-light);
+  }
+
+  .hero-photo-placeholder .placeholder-icon {
+    width: 80px; height: 80px;
+    border: 0.5px solid var(--border-strong); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+  }
+
+  .hero-number {
+    position: absolute; bottom: 2rem; right: 2rem;
+    font-family: var(--mono); font-size: 0.65rem; color: var(--ink-light);
+    letter-spacing: 0.1em;
+  }
+
+  /* Replace the placeholder with an actual photo */
+  .hero-img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center top;
+    display: block;
+  }
+
+  /* ── SECTION BASE ── */
+  section { padding: clamp(4rem, 10vw, 9rem) 0; }
+
+  .section-header {
+    display: flex; align-items: baseline; gap: 2rem;
+    margin-bottom: 4rem; border-bottom: 0.5px solid var(--border); padding-bottom: 1.5rem;
+  }
+
+  .section-number {
+    font-family: var(--mono); font-size: 0.65rem; color: var(--ink-light);
+    letter-spacing: 0.1em; flex-shrink: 0;
+  }
+
+  /* ── O PROJEKTU ── */
+  #projekt { background: var(--white); }
+
+  .projekt-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+
+  .projekt-quote {
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem); font-weight: 300; font-style: italic;
+    line-height: 1.5; color: var(--ink); border-left: 2px solid var(--accent);
+    padding-left: 1.5rem; margin-bottom: 2rem;
+  }
+
+  .projekt-text { font-size: 1rem; color: var(--ink-mid); line-height: 1.85; }
+  .projekt-text p + p { margin-top: 1.25rem; }
+
+  /* ── VÝSTAVY ── */
+  #vystavy { background: var(--cream); }
+
+  .vystavy-tabs {
+    display: flex; gap: 0; margin-bottom: 3rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .tab-btn {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; background: transparent; border: none; cursor: pointer;
+    padding: 0.75rem 1.5rem; color: var(--ink-light); transition: var(--transition);
+    border-bottom: 2px solid transparent; margin-bottom: -0.5px;
+  }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
+  .tab-btn:hover { color: var(--ink); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .exhibition-list { display: flex; flex-direction: column; gap: 0; }
+
+  .exhibition-item {
+    display: grid; grid-template-columns: 120px 1fr auto;
+    gap: 2rem; align-items: start;
+    padding: 2rem 0; border-bottom: 0.5px solid var(--border);
+    transition: var(--transition);
+  }
+  .exhibition-item:first-child { border-top: 0.5px solid var(--border); }
+  .exhibition-item:hover { background: rgba(28,26,23,0.02); }
+
+  .ex-date {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em;
+    color: var(--ink-light); padding-top: 0.2rem;
+  }
+
+  .ex-title { font-size: 1.1rem; font-weight: 400; margin-bottom: 0.35rem; }
+
+  .ex-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-light); letter-spacing: 0.05em; }
+
+  .ex-description { font-size: 0.9rem; color: var(--ink-mid); margin-top: 0.75rem; line-height: 1.7; }
+
+  .ex-badge {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 2px;
+    flex-shrink: 0; align-self: start;
+  }
+  .ex-badge.upcoming { background: var(--accent); color: var(--white); }
+  .ex-badge.past { background: transparent; border: 0.5px solid var(--border-strong); color: var(--ink-light); }
+  .ex-badge.current { background: var(--ink); color: var(--cream); }
+
+  .loading-state {
+    padding: 4rem 0; text-align: center;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    color: var(--ink-light); text-transform: uppercase;
+  }
+
+  .error-state {
+    padding: 2rem; background: rgba(124,74,45,0.06);
+    border: 0.5px solid rgba(124,74,45,0.2);
+    border-radius: 2px; color: var(--ink-mid); font-size: 0.9rem;
+  }
+
+  /* ── MÉDIA ── */
+  #media { background: var(--cream-dark); }
+
+  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+  .media-card {
+    background: var(--white); border: 0.5px solid var(--border);
+    padding: 1.75rem; transition: var(--transition);
+    cursor: pointer;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .media-card:hover { border-color: var(--ink-mid); }
+
+  .media-outlet {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem;
+  }
+
+  .media-headline { font-size: 1rem; font-weight: 400; line-height: 1.5; margin-bottom: 1rem; }
+
+  .media-date { font-family: var(--mono); font-size: 0.65rem; color: var(--ink-light); }
+
+  .media-link-label {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-mid); margin-top: 1rem;
+    border-bottom: 0.5px solid var(--border); padding-bottom: 0.15rem;
+    text-decoration: none; transition: var(--transition);
+  }
+  .media-link-label:hover { color: var(--ink); border-color: var(--ink-mid); }
+
+  /* ── KONTAKT ── */
+  #kontakt { background: var(--ink); color: var(--cream); }
+
+  #kontakt .section-header { border-bottom-color: rgba(245,240,232,0.15); }
+  #kontakt .section-number { color: rgba(245,240,232,0.35); }
+  #kontakt h2 { color: var(--cream); }
+
+  .kontakt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+
+  .kontakt-text { font-size: 1.05rem; color: rgba(245,240,232,0.65); line-height: 1.8; margin-bottom: 2.5rem; }
+
+  .kontakt-links { display: flex; flex-direction: column; gap: 0; }
+
+  .kontakt-link-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem 0; border-bottom: 0.5px solid rgba(245,240,232,0.12);
+    text-decoration: none; color: var(--cream); transition: var(--transition);
+  }
+  .kontakt-link-item:hover { color: var(--accent-light); }
+  .kontakt-link-item:first-child { border-top: 0.5px solid rgba(245,240,232,0.12); }
+
+  .kontakt-link-label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,240,232,0.4); }
+
+  .kontakt-link-value { font-size: 1rem; font-weight: 300; }
+
+  /* Contact form */
+  .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .form-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(245,240,232,0.45);
+  }
+
+  .form-input, .form-select, .form-textarea {
+    background: rgba(245,240,232,0.06); border: 0.5px solid rgba(245,240,232,0.2);
+    color: var(--cream); font-family: var(--serif); font-size: 1rem; font-weight: 300;
+    padding: 0.75rem 1rem; outline: none;
+    transition: border-color var(--transition);
+    appearance: none; border-radius: 0;
+    width: 100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: rgba(245,240,232,0.5);
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(245,240,232,0.25); }
+
+  .form-select option { background: var(--ink); color: var(--cream); }
+
+  .form-textarea { resize: vertical; min-height: 120px; }
+
+  .form-submit {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; background: var(--cream); color: var(--ink);
+    border: none; padding: 0.9rem 1.75rem; cursor: pointer;
+    transition: var(--transition); align-self: flex-start;
+  }
+  .form-submit:hover { background: var(--accent-light); color: var(--white); }
+  .form-submit::after { content: '→'; }
+
+  .form-success {
+    display: none; padding: 1rem 1.25rem;
+    background: rgba(124,74,45,0.2); border: 0.5px solid rgba(196,137,106,0.4);
+    font-size: 0.9rem; color: var(--accent-light);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); padding: 2rem clamp(1.5rem, 5vw, 4rem);
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 0.5px solid rgba(245,240,232,0.1);
+  }
+
+  .footer-copy { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em; color: rgba(245,240,232,0.3); }
+
+  .footer-back {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: rgba(245,240,232,0.35); text-decoration: none;
+    transition: var(--transition);
+  }
+  .footer-back:hover { color: rgba(245,240,232,0.7); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    #hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .projekt-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .kontakt-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .exhibition-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .ex-date { order: 2; }
+    .ex-badge { order: 1; align-self: start; }
+    .nav-links { display: none; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate { opacity: 0; }
+  .animate.visible { animation: fadeUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+  .animate:nth-child(2) { animation-delay: 0.1s; }
+  .animate:nth-child(3) { animation-delay: 0.2s; }
+
+  /* ── NOTION SETUP BANNER ── */
+  .setup-banner {
+    background: rgba(124,74,45,0.08); border: 0.5px solid rgba(124,74,45,0.25);
+    padding: 1rem 1.25rem; margin-bottom: 2rem; font-size: 0.85rem; color: var(--ink-mid);
+    display: flex; align-items: flex-start; gap: 0.75rem;
+  }
+  .setup-banner strong { color: var(--accent); font-weight: 400; }
+  .setup-banner code { font-family: var(--mono); font-size: 0.75rem; background: rgba(0,0,0,0.05); padding: 0.1em 0.3em; }
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-name" data-cs="Jméno Příjmení" data-en="First Last">Jméno Příjmení</a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#projekt" data-cs="Projekt" data-en="Project">Projekt</a></li>
+      <li><a href="#vystavy" data-cs="Výstavy" data-en="Exhibitions">Výstavy</a></li>
+      <li><a href="#media" data-cs="Média" data-en="Media">Média</a></li>
+      <li><a href="#kontakt" data-cs="Kontakt" data-en="Contact">Kontakt</a></li>
+    </ul>
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="cs">CZ</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow" data-cs="Výzkum & Umění" data-en="Research & Art">Výzkum & Umění</div>
+    <h1 class="hero-title">
+      <span data-cs="Jméno" data-en="First">Jméno</span><br>
+      <em data-cs="Příjmení" data-en="Last">Příjmení</em>
+    </h1>
+    <p class="hero-bio" data-cs="Výzkumnice a umělkyně pracující na průsečíku sociální péče, intimity a viditelnosti. Její diplomová práce otevírá téma, které zůstává dlouhodobě opomíjené — sexualita a intimita seniorek a seniorů žijících v domovech pro seniory." data-en="Researcher and artist working at the intersection of social care, intimacy, and visibility. Her thesis opens a topic that has long been overlooked — the sexuality and intimacy of elderly men and women living in care homes.">
+      Výzkumnice a umělkyně pracující na průsečíku sociální péče, intimity a viditelnosti. Její diplomová práce otevírá téma, které zůstává dlouhodobě opomíjené — sexualita a intimita seniorek a seniorů žijících v domovech pro seniory.
+    </p>
+    <a href="#kontakt" class="hero-cta" data-cs="Kontaktovat" data-en="Get in touch">Kontaktovat</a>
+  </div>
+  <div class="hero-right">
+    <!--
+      FOTO: Vložte fotografii kamošky takto:
+      <img src="foto.jpg" alt="Jméno Příjmení" class="hero-img">
+      a smažte hero-photo-placeholder
+    -->
+    <div class="hero-photo-placeholder">
+      <div class="placeholder-icon">◻</div>
+      <span class="mono">Fotografie</span>
+    </div>
+    <span class="hero-number mono">01 / 04</span>
+  </div>
+</section>
+
+<!-- O PROJEKTU -->
+<section id="projekt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number mono">02</span>
+      <h2 data-cs="O projektu" data-en="About the project">O projektu</h2>
+    </div>
+    <div class="projekt-grid">
+      <div>
+        <p class="projekt-quote animate" data-cs="„Intimita není výsadou mládí. Je podmínkou důstojnosti."" data-en="„Intimacy is not a privilege of youth. It is a condition of dignity."">
+          „Intimita není výsadou mládí. Je podmínkou důstojnosti."
+        </p>
+      </div>
+      <div class="projekt-text animate">
+        <p data-cs="Výstavní a výzkumný projekt vychází z diplomové práce zaměřené na téma intimity, sexuality a tělesnosti seniorek a seniorů žijících v institucionální péči. Jde o oblast, která zůstává ve veřejném diskurzu i v praxi domovů pro seniory dlouhodobě tabuizovaná." data-en="The exhibition and research project stems from a thesis focused on the theme of intimacy, sexuality, and corporeality of elderly people living in institutional care — a topic that remains taboo in public discourse and in the daily practice of care homes.">
+          Výstavní a výzkumný projekt vychází z diplomové práce zaměřené na téma intimity, sexuality a tělesnosti seniorek a seniorů žijících v institucionální péči. Jde o oblast, která zůstává ve veřejném diskurzu i v praxi domovů pro seniory dlouhodobě tabuizovaná.
+        </p>
+        <p data-cs="Práce kombinuje kvalitativní výzkum, rozhovory s pracovníky péče i s obyvateli domovů a vizuální instalaci, která dává hlas těm, kteří jsou jinak neviditelní. Výstava putuje po českých i zahraničních institucích." data-en="The work combines qualitative research, interviews with care workers and residents, and a visual installation that gives voice to those who are otherwise invisible. The exhibition tours Czech and international institutions.">
+          Práce kombinuje kvalitativní výzkum, rozhovory s pracovníky péče i s obyvateli domovů a vizuální instalaci, která dává hlas těm, kteří jsou jinak neviditelní. Výstava putuje po českých i zahraničních institucích.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VÝSTAVY -->
+<section id="vystavy">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number mono">03</span>
+      <h2 data-cs="Výstavy" data-en="Exhibitions">Výstavy</h2>
+    </div>
+
+    <div class="vystavy-tabs">
+      <button class="tab-btn active" data-tab="vsechny" data-cs="Všechny" data-en="All">Všechny</button>
+      <button class="tab-btn" data-tab="chystane" data-cs="Chystané" data-en="Upcoming">Chystané</button>
+      <button class="tab-btn" data-tab="probehle" data-cs="Proběhlé" data-en="Past">Proběhlé</button>
+    </div>
+
+    <!-- NOTION SETUP BANNER – smazat po konfiguraci -->
+    <div class="setup-banner" id="setupBanner">
+      <strong>⚙ Nastavení Notion integrace:</strong>&nbsp;
+      V souboru <code>script</code> dole vyplňte <code>NOTION_TOKEN</code> a <code>DATABASE_ID</code>. Poté smažte tento banner. Viz README.
+    </div>
+
+    <div id="exhibitionsContainer">
+      <div class="loading-state" data-cs="Načítám výstavy…" data-en="Loading exhibitions…">Načítám výstavy…</div>
+    </div>
+  </div>
+</section>
+
+<!-- MÉDIA -->
+<section id="media">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number mono">04</span>
+      <h2 data-cs="Zmínky v médiích" data-en="Press coverage">Zmínky v médiích</h2>
+    </div>
+    <div id="mediaContainer">
+      <div class="loading-state" data-cs="Načítám zmínky…" data-en="Loading press…">Načítám zmínky…</div>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section id="kontakt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-number mono">05</span>
+      <h2 data-cs="Kontakt" data-en="Contact">Kontakt</h2>
+    </div>
+    <div class="kontakt-grid">
+      <div>
+        <p class="kontakt-text" data-cs="Máte zájem o zapůjčení výstavy, rozhovor, spolupráci nebo jste novinář_ka? Napište mi." data-en="Interested in borrowing the exhibition, an interview, collaboration, or are you a journalist? Get in touch.">
+          Máte zájem o zapůjčení výstavy, rozhovor, spolupráci nebo jste novinář_ka? Napište mi.
+        </p>
+        <nav class="kontakt-links">
+          <a href="mailto:jmeno@example.com" class="kontakt-link-item">
+            <span class="kontakt-link-label mono" data-cs="E-mail" data-en="Email">E-mail</span>
+            <span class="kontakt-link-value">jmeno@example.com</span>
+          </a>
+          <a href="https://instagram.com/" target="_blank" rel="noopener" class="kontakt-link-item">
+            <span class="kontakt-link-label mono">Instagram</span>
+            <span class="kontakt-link-value">@handle</span>
+          </a>
+          <a href="#" class="kontakt-link-item" id="pressKitLink">
+            <span class="kontakt-link-label mono" data-cs="Tiskový kit" data-en="Press kit">Tiskový kit</span>
+            <span class="kontakt-link-value" data-cs="Stáhnout PDF →" data-en="Download PDF →">Stáhnout PDF →</span>
+          </a>
+        </nav>
+      </div>
+      <div>
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label class="form-label" data-cs="Jméno" data-en="Name">Jméno</label>
+            <input type="text" class="form-input" id="formName" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-cs="E-mail" data-en="Email">E-mail</label>
+            <input type="email" class="form-input" id="formEmail" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-cs="Zájem o" data-en="Regarding">Zájem o</label>
+            <select class="form-select" id="formType">
+              <option value="vystava" data-cs="Zapůjčení výstavy" data-en="Exhibition loan">Zapůjčení výstavy</option>
+              <option value="rozhovor" data-cs="Rozhovor / média" data-en="Interview / media">Rozhovor / média</option>
+              <option value="spoluprace" data-cs="Spolupráce" data-en="Collaboration">Spolupráce</option>
+              <option value="jine" data-cs="Jiné" data-en="Other">Jiné</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-cs="Zpráva" data-en="Message">Zpráva</label>
+            <textarea class="form-textarea" id="formMessage" required></textarea>
+          </div>
+          <button type="submit" class="form-submit" data-cs="Odeslat" data-en="Send">Odeslat</button>
+          <div class="form-success" id="formSuccess" data-cs="Zpráva odeslána. Ozvu se brzy." data-en="Message sent. I'll be in touch soon.">Zpráva odeslána. Ozvu se brzy.</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy" id="footerYear"></span>
+  <a href="#hero" class="footer-back mono" data-cs="↑ Nahoru" data-en="↑ Top">↑ Nahoru</a>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════
+   NOTION KONFIGURACE
+   
+   1. Vytvořte Notion integration na notion.so/my-integrations
+   2. Sdílejte databáze s integrací
+   3. Vyplňte tokeny níže
+   
+   Struktura databáze VÝSTAVY (Notion):
+   - Název (title)
+   - Místo (text)
+   - Datum (date)
+   - Stav (select): "Probíhá" | "Chystané" | "Proběhlé"
+   - Popis (text)
+   - Web (url)
+   
+   Struktura databáze MÉDIA (Notion):
+   - Název (title)
+   - Médium (text) — např. "ČT24", "Respekt"
+   - Datum (date)
+   - Odkaz (url)
+   
+   POZOR: Notion API nelze volat přímo z prohlížeče kvůli CORS.
+   Potřebujete malý proxy endpoint — viz README níže.
+═══════════════════════════════════════════════ */
+
+const CONFIG = {
+  // Váš Notion integration token (secret_...)
+  NOTION_TOKEN: 'YOUR_NOTION_TOKEN',
+  // ID databáze výstav (z URL: notion.so/.../{DATABASE_ID}?v=...)
+  EXHIBITIONS_DB: 'YOUR_EXHIBITIONS_DATABASE_ID',
+  // ID databáze médií
+  MEDIA_DB: 'YOUR_MEDIA_DATABASE_ID',
+  // URL vašeho proxy (viz README) — nebo použijte Netlify/Vercel function
+  PROXY_URL: 'https://vas-proxy.example.com/notion',
+  // Fallback: pokud proxy není, zobrazí se demo data
+  USE_DEMO: true
+};
+
+/* ── DEMO DATA (zobrazí se pokud USE_DEMO: true nebo API selže) ── */
+const DEMO_EXHIBITIONS = [
+  {
+    id: '1', title: 'Intimní prostory', title_en: 'Intimate Spaces',
+    place: 'Galerie Etc., Praha', date: '2025-03-01', date_end: '2025-04-30',
+    status: 'Proběhlé', description: 'Úvodní výstava projektu v pražské Galerii Etc.',
+    description_en: 'Opening exhibition of the project at Galerie Etc. Prague.'
+  },
+  {
+    id: '2', title: 'Intimní prostory', title_en: 'Intimate Spaces',
+    place: 'Dům umění, Brno', date: '2025-09-10', date_end: '2025-11-02',
+    status: 'Proběhlé', description: 'Rozšířená verze výstavy s novými rozhovory.',
+    description_en: 'Extended version of the exhibition with new interviews.'
+  },
+  {
+    id: '3', title: 'Intimní prostory', title_en: 'Intimate Spaces',
+    place: 'MeetFactory, Praha', date: '2026-06-15', date_end: '2026-08-31',
+    status: 'Chystané', description: 'Letní repríza s doprovodným programem pro veřejnost.',
+    description_en: 'Summer reprise with a public programme.'
+  },
+  {
+    id: '4', title: 'Mezinárodní prezentace', title_en: 'International Presentation',
+    place: 'Vienna Art Week', date: '2026-11-17', date_end: '2026-11-24',
+    status: 'Chystané', description: 'Prezentace v rámci Vienna Art Week 2026.',
+    description_en: 'Presentation at Vienna Art Week 2026.'
+  }
+];
+
+const DEMO_MEDIA = [
+  { id: '1', headline: 'Diplomantka, která rozbíjí tabu: Senioři mají právo na intimitu', headline_en: 'Graduate who breaks taboo: Seniors have a right to intimacy', outlet: 'Respekt', date: '2025-04-12', url: '#' },
+  { id: '2', headline: 'Výstava v brněnském Domě umění staví zrcadlo institucionální péči', headline_en: 'Exhibition in Brno holds a mirror to institutional care', outlet: 'Český rozhlas', date: '2025-09-15', url: '#' },
+  { id: '3', headline: 'Intimita bez věku. Výzkumný projekt odtabuizovává sexualitu v domovech pro seniory', headline_en: 'Intimacy without age. Research project detaboos sexuality in care homes', outlet: 'A2', date: '2025-10-03', url: '#' },
+  { id: '4', headline: 'Kde se ve stáří ztrácí tělo? Rozhovor s autorkou projektu', headline_en: 'Where does the body disappear in old age? Interview with the project author', outlet: 'Deník N', date: '2025-11-20', url: '#' },
+  { id: '5', headline: 'Výzkum, který stát nechce vidět. Intimita seniorů v Česku', headline_en: 'Research the state does not want to see. Senior intimacy in Czechia', outlet: 'ČT Art', date: '2026-01-08', url: '#' },
+  { id: '6', headline: 'Intimní prostory na cestě do Vídně', headline_en: 'Intimate Spaces on its way to Vienna', outlet: 'Flash Art CZ', date: '2026-03-22', url: '#' }
+];
+
+/* ── JAZYK ── */
+let currentLang = 'cs';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('[data-cs]').forEach(el => {
+    el.textContent = lang === 'cs' ? el.dataset.cs : el.dataset.en;
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  document.documentElement.lang = lang;
+  renderExhibitions(currentExhibitions, currentTab);
+  renderMedia(currentMedia);
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+});
+
+/* ── TABS ── */
+let currentTab = 'vsechny';
+let currentExhibitions = [];
+let currentMedia = [];
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTab = btn.dataset.tab;
+    renderExhibitions(currentExhibitions, currentTab);
+  });
+});
+
+/* ── FORMAT DATE ── */
+function formatDate(dateStr, lang) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return d.toLocaleDateString(lang === 'cs' ? 'cs-CZ' : 'en-GB', options);
+}
+
+/* ── RENDER VÝSTAVY ── */
+function renderExhibitions(data, tab) {
+  const container = document.getElementById('exhibitionsContainer');
+  const lang = currentLang;
+
+  let filtered = data;
+  if (tab === 'chystane') filtered = data.filter(e => e.status === 'Chystané');
+  if (tab === 'probehle') filtered = data.filter(e => e.status === 'Proběhlé');
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="loading-state">${lang === 'cs' ? 'Žádné výstavy.' : 'No exhibitions.'}</div>`;
+    return;
+  }
+
+  const badgeLabel = { 'Chystané': lang === 'cs' ? 'Chystané' : 'Upcoming', 'Probíhá': lang === 'cs' ? 'Probíhá' : 'Current', 'Proběhlé': lang === 'cs' ? 'Proběhlé' : 'Past' };
+  const badgeClass = { 'Chystané': 'upcoming', 'Probíhá': 'current', 'Proběhlé': 'past' };
+
+  container.innerHTML = `<div class="exhibition-list">${filtered.map(e => `
+    <div class="exhibition-item">
+      <div class="ex-date">${formatDate(e.date, lang)}</div>
+      <div>
+        <div class="ex-title">${lang === 'cs' ? e.title : (e.title_en || e.title)}</div>
+        <div class="ex-meta">${e.place}</div>
+        ${e.description ? `<div class="ex-description">${lang === 'cs' ? e.description : (e.description_en || e.description)}</div>` : ''}
+      </div>
+      <span class="ex-badge ${badgeClass[e.status] || 'past'}">${badgeLabel[e.status] || e.status}</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+/* ── RENDER MÉDIA ── */
+function renderMedia(data) {
+  const container = document.getElementById('mediaContainer');
+  const lang = currentLang;
+
+  if (!data.length) {
+    container.innerHTML = `<div class="loading-state">${lang === 'cs' ? 'Žádné zmínky.' : 'No press.'}</div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="media-grid">${data.map(m => `
+    <a href="${m.url || '#'}" target="_blank" rel="noopener" class="media-card">
+      <div class="media-outlet">${m.outlet}</div>
+      <div class="media-headline">${lang === 'cs' ? m.headline : (m.headline_en || m.headline)}</div>
+      <div class="media-date">${formatDate(m.date, lang)}</div>
+      <span class="media-link-label">${lang === 'cs' ? 'Číst článek →' : 'Read article →'}</span>
+    </a>`).join('')}
+  </div>`;
+}
+
+/* ── NOTION API FETCH ── */
+async function fetchFromNotion(dbId, sorts) {
+  if (CONFIG.USE_DEMO || CONFIG.NOTION_TOKEN === 'YOUR_NOTION_TOKEN') {
+    return null; // use demo data
+  }
+  try {
+    const resp = await fetch(`${CONFIG.PROXY_URL}/databases/${dbId}/query`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sorts })
+    });
+    if (!resp.ok) throw new Error('Notion API error');
+    return await resp.json();
+  } catch (e) {
+    console.warn('Notion fetch failed, using demo data:', e);
+    return null;
+  }
+}
+
+function notionPropText(prop) {
+  if (!prop) return '';
+  if (prop.type === 'title') return prop.title.map(t => t.plain_text).join('');
+  if (prop.type === 'rich_text') return prop.rich_text.map(t => t.plain_text).join('');
+  if (prop.type === 'select') return prop.select?.name || '';
+  if (prop.type === 'date') return prop.date?.start || '';
+  if (prop.type === 'url') return prop.url || '';
+  return '';
+}
+
+function parseExhibitions(notionData) {
+  return notionData.results.map(page => ({
+    id: page.id,
+    title: notionPropText(page.properties['Název']),
+    title_en: notionPropText(page.properties['Název EN']),
+    place: notionPropText(page.properties['Místo']),
+    date: notionPropText(page.properties['Datum']),
+    status: notionPropText(page.properties['Stav']),
+    description: notionPropText(page.properties['Popis']),
+    description_en: notionPropText(page.properties['Popis EN']),
+  }));
+}
+
+function parseMedia(notionData) {
+  return notionData.results.map(page => ({
+    id: page.id,
+    headline: notionPropText(page.properties['Název']),
+    headline_en: notionPropText(page.properties['Název EN']),
+    outlet: notionPropText(page.properties['Médium']),
+    date: notionPropText(page.properties['Datum']),
+    url: notionPropText(page.properties['Odkaz']),
+  }));
+}
+
+/* ── INIT ── */
+async function init() {
+  // Výstavy
+  const exData = await fetchFromNotion(CONFIG.EXHIBITIONS_DB, [{ property: 'Datum', direction: 'descending' }]);
+  currentExhibitions = exData ? parseExhibitions(exData) : DEMO_EXHIBITIONS;
+  renderExhibitions(currentExhibitions, currentTab);
+
+  // Média
+  const mData = await fetchFromNotion(CONFIG.MEDIA_DB, [{ property: 'Datum', direction: 'descending' }]);
+  currentMedia = mData ? parseMedia(mData) : DEMO_MEDIA;
+  renderMedia(currentMedia);
+
+  // Skryj banner pokud Notion nakonfigurován
+  if (CONFIG.NOTION_TOKEN !== 'YOUR_NOTION_TOKEN') {
+    document.getElementById('setupBanner').style.display = 'none';
+  }
+}
+
+/* ── CONTACT FORM ── */
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  // Napojte na Formspree, Netlify Forms nebo vlastní endpoint:
+  // fetch('https://formspree.io/f/YOUR_ID', { method: 'POST', body: new FormData(this) })
+  const success = document.getElementById('formSuccess');
+  success.style.display = 'block';
+  this.reset();
+  setTimeout(() => success.style.display = 'none', 5000);
+});
+
+/* ── SCROLL ANIMATION ── */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+
+/* ── FOOTER YEAR ── */
+document.getElementById('footerYear').textContent = `© ${new Date().getFullYear()} Jméno Příjmení`;
+
+/* ── RUN ── */
+init();
+</script>
+
+<!--
+═══════════════════════════════════════════════
+  README – NOTION INTEGRACE
+
+  CORS problém: Notion API blokuje přímé volání z prohlížeče.
+  Potřebujete proxy. Nejjednodušší možnosti:
+
+  VARIANTA A – Netlify Functions (zdarma):
+  1. Vytvořte soubor netlify/functions/notion.js:
+     const fetch = require('node-fetch');
+     exports.handler = async (event) => {
+       const { path, ...body } = JSON.parse(event.body);
+       const r = await fetch(`https://api.notion.com/v1${path}`, {
+         method: 'POST',
+         headers: {
+           'Authorization': `Bearer ${process.env.NOTION_TOKEN}`,
+           'Notion-Version': '2022-06-28',
+           'Content-Type': 'application/json'
+         },
+         body: JSON.stringify(body)
+       });
+       return { statusCode: 200, body: await r.text() };
+     };
+  2. PROXY_URL = '/.netlify/functions/notion'
+
+  VARIANTA B – Vercel Edge Function (zdarma):
+  Podobně, viz docs.vercel.com/functions
+
+  VARIANTA C – Nahradit Notion za Google Sheets:
+  Použijte Google Sheets API + Apps Script jako proxy.
+  Řekněte mi a připravím alternativní verzi.
+
+  KONTAKTNÍ FORMULÁŘ:
+  Nejjednodušší: Formspree.io — zdarma, stačí nahradit
+  YOUR_ID ve fetch() volání výše.
+═══════════════════════════════════════════════
+-->
+
+</body>
+</html>
